@@ -20,7 +20,7 @@ function App(){
             
             <R tel l ns>
 
-                <R t ns br s= {"270px"}>
+                <R t ns br s={"270px"}>
                     <R s = {"50px"}>
                     <Text>Search Bar</Text>    
                     </R>        
