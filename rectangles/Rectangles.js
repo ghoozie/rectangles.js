@@ -1,19 +1,29 @@
 
-
-function Logo(props){
-    return(
-        <R ps = {props.ps}>  
-            <img src = {"pp.svg"} style={{height:"60%",margin:"20%",paddingLeft:"15px"}} />
-        </R>
-
+function pass(props){
+  const objectMap = (obj, fn) =>
+  Object.fromEntries(
+    Object.entries(obj).map(
+      ([k, v], i) => [k, fn(v, k, i)]
     )
+  )
+  
+  return objectMap(props,v=>v===true?"true":(v===false?"false":v))
 }
 
-function Text(props){
+function T(props){
+  return(
+  <C {...pass(props)}>
+    <textarea className = {"R " + props.theme} style={{paddingTop:"18px",height:"100%",width:"100%",resize:"none"}} placeholder={props.children}></textarea>
+  </C>
+  )
+}
+
+
+function C(props){
     return (
-        <R ps ={props.ps} s = {props.s}>
-            <R ns t>
-                <div style = {{display:"flex",height:"100%",alignItems:"center",justifyContent:"left",paddingLeft:"15px"
+        <R {...pass(props)}>
+            <R tel t h={props.h}>
+                <div {...pass(props)} style = {{display:"flex",flexWrap:"wrap",height:"100%",alignItems:"center",justifyContent:"left",paddingLeft:"10px"
                                 }}>
                 {props.children}
                 </div>
@@ -21,6 +31,9 @@ function Text(props){
         </R>
     )
 }
+
+
+
 
 /* The Rectangle component */
 function R(props){
@@ -55,17 +68,19 @@ function R(props){
     if (bl){ style=a(style,{ borderLeftStyle: "solid" } ) };
     if (br){ style=a(style,{ borderRightStyle: "solid" } ) };
 
-    /* noscroll */
+    /* noscroll Shouldn't be needed....*/
     if (props.ns){style=a(style,{overflow:"hidden"})}
+
+    if (props.h){style=a(style,{})}
 
     /* Rect Size */
     const v = (!props.ps || props.ps == "top" || props.ps == "bottom")
     var [s,ms] = [props.s,props.ms];
 
-    if (props.className != "root"){
+    if (!props.root){
         if (!s){s="auto"}
-        if (v){style= a(style,{height:s,width:"auto"} )} /* for now */
-        else {style=a(style,{width:s,height:"auto"})}
+        if (v){style= a(style,{height:s,width:"100%"} )} /* for now */
+        else {style=a(style,{width:s,height:"100%"})}
     }
 
     /* Pass float orientation to children */
@@ -74,14 +89,27 @@ function R(props){
       (child, i) => {
         return React.cloneElement(child, {
         //this properties are available as a props in child components
-          ps: side
+          ps: side,
+          theme: props.theme
         });
       }
     );
 
+    /* if Collapsed */
+    if (props.c){style= a(style,{display:"none"} )} /* for now */
+
+    
+    const isTel = props.tel?"tel ":"nottel ";
+    const isHover = props.h?"h ":"";
+    const ismc = props.mc?"mc ":""
+    const ismsc = props.msc?"msc ":""
+    const root = props.root?"root ":""
+    const theme = props.theme + " ";
+
+    const className = "R " + root + theme + isTel + isHover +ismc +ismsc+ props.className
     return (
-        <div childfloat={side} tel={props.tel?"true":"false"} 
-            className = {"R " + (props.tel?"tel ":"nottel ") + props.className}
+        <div childfloat={side} 
+            className = {className}
                 style = {{...style,...props.style}}>
         
             {updatedChildren}
